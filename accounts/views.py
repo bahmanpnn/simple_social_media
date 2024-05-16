@@ -19,14 +19,17 @@ class RegisterView(View):
 
         if form.is_valid():
             cd=form.cleaned_data
+            
+            # user=User.objects.filter(email=cd['email']).exists()
+            # if user:
+            #     messages.error(request,'this user exists!! please register again ;))',extra_tags='danger')
+            #     return redirect(reverse('accounts:register-page')) 
+            
             User.objects.create_user(username=cd['username'],email=cd['email'],password=cd['password'])
             messages.success(request,'user added succussfully; please login now :)) ',extra_tags='success')
             
             return redirect(reverse('home:home-page'))           
             
-            # check_username=User.objects.get(username=new_user.username)
-            # if check_username is None:
-            #     new_user.save()
 
         else:
             return render(request,'accounts/register.html',{'form':form}) 
