@@ -4,8 +4,8 @@ from django.views import View
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import RegisterForm,LoginForm
-
 
 class RegisterView(View):
     
@@ -79,8 +79,9 @@ class LoginView(View):
         return render(request,self.template_name,{'form':form})
     
 
-class LogoutView(View):
-    
+class LogoutView(LoginRequiredMixin,View):
+    # login_url='/accounts/login/'
+
     def get(self,request):
         logout(request)
         messages.success(request,'you logged out succussfully')
