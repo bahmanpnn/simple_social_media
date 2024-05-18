@@ -9,24 +9,23 @@
           <li class="nav-item">
             <a class="nav-link " aria-current="page" href="{% url "home:home-page" %}">home</a>
           </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{% url "accounts:logout-page" %}">logout</a>
+          </li>
+          {% else %}
           <li class="nav-item">
             <a class="nav-link " aria-current="page" href="{% url "accounts:register-page" %}">register</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{% url "accounts:login-page" %}">login</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
             <a class="nav-link " aria-current="page" href="/admin">admin panel</a>
           </li>
-          {% comment %} {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{% url "" %}">logout</a>
-          </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{% url "" %}">register</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{% url "" %}">login</a>
-            </li>
-          {% endif %} {% endcomment %}
+          {% endif %}
 
         </ul>
       </div>

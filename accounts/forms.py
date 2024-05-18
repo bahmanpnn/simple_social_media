@@ -54,4 +54,16 @@ class RegisterForm(forms.Form):
 
         if password and confirm_password and password !=confirm_password:
             raise ValidationError('password with confirm password does not match!! check again please')
-    
+
+
+class LoginForm(forms.Form):
+
+    username=forms.CharField(widget=forms.TextInput(attrs={
+        'class':'form-control col-md-3',
+        'placeholder':'username'
+    }))
+
+    password=forms.CharField(widget=forms.PasswordInput(attrs={
+        'class':'form-control col-md-3',
+        'placeholder':'password'
+    }))
