@@ -1,16 +1,24 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.views import View
-from .forms import RegisterForm,LoginForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
+from .forms import RegisterForm,LoginForm
 
 
 class RegisterView(View):
     
     form_class=RegisterForm
     template_name='accounts/register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.error(request,'you logged in and can not register when logged in ;))',extra_tags='danger')
+            return redirect(reverse('home:home-page')) 
+        else:
+            return super().dispatch(request, *args, **kwargs)
+    
     def get(self,request):
         form=self.form_class()
         return render(request,self.template_name,{'form':form})
@@ -41,6 +49,13 @@ class LoginView(View):
     template_name='accounts/login.html'
     form_class=LoginForm
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.error(request,'you logged in and can not login when logged in; so logout first then login ;))',extra_tags='danger')
+            return redirect(reverse('home:home-page')) 
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
     def get(self,request):
         form=self.form_class()
         return render(request,self.template_name,{'form':form})
@@ -70,3 +85,23 @@ class LogoutView(View):
         logout(request)
         messages.success(request,'you logged out succussfully')
         return redirect(reverse('home:home-page'))
+    
+
+# class TestDispatch(View):
+#     template_name='accounts/dispatch.html'
+
+#     def dispatch(self, request, *args, **kwargs):
+#         if request.method=="GET":
+#             kwargs['data']='bahman'
+#             return self.one(request, *args, **kwargs)
+#         elif request.method=="POST":
+#             kwargs['data']='mamad'
+#             return self.two(request, *args, **kwargs)
+#         else:
+#             return super().dispatch(request,*args,**kwargs)
+    
+#     def one(self,request,*args, **kwargs):
+#         return render(request,self.template_name,{'data':kwargs['data']})
+
+#     def two(self,request,*args, **kwargs):
+#         return render(request,self.template_name,{'data':kwargs['data']})
