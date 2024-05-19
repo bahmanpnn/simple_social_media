@@ -106,3 +106,13 @@ class LogoutView(LoginRequiredMixin,View):
 
 #     def two(self,request,*args, **kwargs):
 #         return render(request,self.template_name,{'data':kwargs['data']})
+
+
+class UserProfileView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        try:
+            user=User.objects.get(pk=user_id)
+            return render(request,'accounts/profile.html',{'user':user})
+
+        except User.DoesNotExist:
+            return redirect(reverse('home:home-page'))
