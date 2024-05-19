@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-# Create your views here.
+from .models import Post
 
 # def home(request):
 #     return render(request,'home/home.html')
@@ -9,7 +9,13 @@ from django.views import View
 class HomeView(View):
     
     def get(self,request):
-        return render(request,'home/home.html')
+        posts=Post.objects.all()
+        # posts=Post.objects.all().order_by('created_date')
+
+        
+        return render(request,'home/home.html',{
+            'posts':posts
+        })
 
     def post(self,request):
         pass
