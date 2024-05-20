@@ -1,9 +1,13 @@
+from typing import Any
+from django.http import HttpRequest
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Post
 from django.contrib import messages
+from django.utils.text import slugify
+from .models import Post
+from .forms import UpdatePostForm
 
 
 
@@ -62,3 +66,37 @@ class DeletePostView(LoginRequiredMixin,View):
         else:
             messages.error(request,'you can not delete this post',extra_tags='danger')
             return redirect(reverse('home:home-page'))
+
+class UpdatePostView(LoginRequiredMixin,View):
+    form_class=UpdatePostForm
+    template_name='home/update_post.html'
+
+    def setup(self, request, *args,**kwargs):
+        self.target_post=Post.objects.get(id=kwargs['post_id'])
+        return super().setup(request, *args, **kwargs)
+    
+
+    def dispatch(self, request, *args, **kwargs):
+        # target_post=self.target_post
+        if not request.user.id == self.target_post.author.id:
+            messages.error(request,'you can not update this post!!',extra_tags='danger')
+            return redirect('home:home-page')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self,request,*args, **kwargs):
+        # target_post=self.target_post
+        return render(request,self.template_name,{
+            'form':self.form_class(instance=self.target_post)
+        })
+
+    def post(self,request,*args, **kwargs):
+        # target_post=self.target_post
+        form=self.form_class(request.POST,instance=self.target_post)
+
+        if form.is_valid():
+            updated_post=form.save(commit=False)
+            updated_post.slug=slugify(form.cleaned_data['title'][:20]+form.cleaned_data['body'][:20])
+            updated_post.save()
+            
+            messages.success(request,'post updated successfully',extra_tags='success')
+            return redirect('home:post-detail-page',self.target_post.id,self.target_post.slug)
