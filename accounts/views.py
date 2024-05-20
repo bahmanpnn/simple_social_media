@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import RegisterForm,LoginForm
+from home.models import Post
 
 class RegisterView(View):
     
@@ -112,7 +113,9 @@ class UserProfileView(LoginRequiredMixin,View):
     def get(self,request,user_id):
         try:
             user=User.objects.get(pk=user_id)
-            return render(request,'accounts/profile.html',{'user':user})
+            user_posts=Post.objects.filter(author_id=user_id)
+            # user_posts=Post.objects.filter(author=user)
+            return render(request,'accounts/profile.html',{'user':user,'posts':user_posts})
 
         except User.DoesNotExist:
             return redirect(reverse('home:home-page'))

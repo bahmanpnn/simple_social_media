@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}post detail page {% endblock title %}
+
+{% block content %}
+    <h3 class='text-center'>this is detail page</h3 >
+          </br>
+          <div class="card text-center">
+            <div class="card-header">
+              {% if post.author.username %}
+                {{post.author.username}}
+              {% else %}
+                {{post.author.email}}
+              {% endif %}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{post.body}}</p>
+            </div>
+            <div class="card-footer text-muted">
+              {{post.created_date | date:'j M o D'}}
+            </div>
+          </div>
+{% endblock content %}

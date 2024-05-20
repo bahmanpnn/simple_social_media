@@ -1,12 +1,34 @@
 {% extends "base.html" %}
 
-{% block title %}profile page{% endblock title %}
+{% block title %}posts {% endblock title %}
 
 {% block content %}
-    <h3 class="text-center">{{user.username}}</h3>
-    {% comment %} <form method='post' action="" novalidate class='col-sm-6'>
-        {% csrf_token %}
-        {{form.as_p}}
-        <input value='register' type='submit'>
-    </form> {% endcomment %}
+    <h3 class='text-center'>this is profile page</h3 >
+        {% if user.username %}
+        <h3 class='text-center'>{{user.username}}</h3>
+        {% else %}
+        {{user.email}}
+        {% endif %}
+    <hr>
+    </br>
+      {% if posts %}
+        {% for post in posts %}
+          <div class="card text-center">
+            <div class="card-header">
+              {{post.author}}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{post.body |truncatewords:6}}</p>
+              <a href="{% url "home:post-detail-page" post_id=post.id post_slug=post.slug  %}" class="btn btn-primary">detail page</a>
+            </div>
+            <div class="card-footer text-muted">
+              {{post.created_date | date:'d l'}}
+            </div>
+          </div>
+        </br>
+        {% endfor %}
+        {% else %}
+        <p>there is no post!! do you want add first? click on add a post in post page :))</p>
+      {% endif %}
 {% endblock content %}

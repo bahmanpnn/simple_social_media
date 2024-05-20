@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}homepage {% endblock title %}
+{% block title %}posts {% endblock title %}
 
 {% block content %}
-    <h3 class='text-center'>this is homepage</h3 >
-          </br>
+    <h3 class='text-center'>this is posts page</h3 >
+    </br>
       {% if posts %}
         {% for post in posts %}
           <div class="card text-center">
@@ -14,7 +14,7 @@
             <div class="card-body">
               <h5 class="card-title">{{post.title}}</h5>
               <p class="card-text">{{post.body |truncatewords:6}}</p>
-              <a href="{% url "home:post-detail-page" post_id=post.id post_slug=post.slug %}" class="btn btn-primary">detail page</a>
+              <a href="{% url "home:post-detail-page" post_id=post.id post_slug=post.slug  %}" class="btn btn-primary">detail page</a>
             </div>
             <div class="card-footer text-muted">
               {{post.created_date | date:'d l'}}
