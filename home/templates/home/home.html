@@ -15,6 +15,7 @@
               <h5 class="card-title">{{post.title}}</h5>
               <p class="card-text">{{post.body |truncatewords:6}}</p>
               <a href="{% url "home:post-detail-page" post_id=post.id post_slug=post.slug %}" class="btn btn-primary">detail page</a>
+              {% comment %} <a href="{{ post.get_absoloute_url }}" class="btn btn-primary">detail page</a> {% endcomment %}
             </div>
             <div class="card-footer text-muted">
               {{post.created_date | date:'d l'}}
@@ -23,6 +24,6 @@
         </br>
         {% endfor %}
         {% else %}
-        <p>there is no post!! do you want add first? click on add a post after logging :))</p>
+        <p class="card">there is no post!! do you want add first? click on add a post after logging :))</p>
       {% endif %}
 {% endblock content %}

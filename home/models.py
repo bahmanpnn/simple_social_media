@@ -14,6 +14,10 @@ class Post(models.Model):
         return f'{self.title} - {self.author}'
     
     # def get_absolute_url(self):
-    #     return reverse("model_detail", args={"pk": self.pk})
-    
+    #     """
+    #         i dont know why it does not work :(( !!! 
+    #     """
+    #     return reverse("home:post-detail-page", args=(self.id,self.slug))
+    #     return reverse("home:post-detail-page", args=[str(self.id),self.slug])
+    #     return reverse("home:post-detail-page", kwargs={"post_id": str(self.id),"post_slug":self.slug})
     

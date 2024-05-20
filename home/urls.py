@@ -7,5 +7,6 @@ urlpatterns = [
     path('',views.HomeView.as_view(),name='home-page'),
     path('posts/',views.PostView.as_view(),name='posts-page'),
     path('posts/<int:post_id>/<slug:post_slug>/',views.PostDetailView.as_view(),name='post-detail-page'),
+    path('posts/delete/<int:post_id>/',views.DeletePostView.as_view(),name='post-delete'),
 
 ]
