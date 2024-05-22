@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404,get_list_or_404
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.models import User
@@ -112,8 +112,9 @@ class LogoutView(LoginRequiredMixin,View):
 class UserProfileView(LoginRequiredMixin,View):
     def get(self,request,user_id):
         try:
-            user=User.objects.get(pk=user_id)
+            user=get_object_or_404(User,pk=user_id)
             user_posts=Post.objects.filter(author_id=user_id)
+            user_posts=get_list_or_404(Post,author_id=user_id)
             # user_posts=Post.objects.filter(author=user)
             return render(request,'accounts/profile.html',{'user':user,'posts':user_posts})
 

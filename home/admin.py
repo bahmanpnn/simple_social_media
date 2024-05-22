@@ -10,7 +10,7 @@ class PostAdmin(admin.ModelAdmin):
 
     """
     
-    list_display=['author','updated_date']
+    list_display=['title','author','updated_date']
     list_filter=['author']
     readonly_fields=['created_date','updated_date']
     raw_id_fields=('author',)

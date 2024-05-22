@@ -1,13 +1,11 @@
-from typing import Any
-from django.http import HttpRequest
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404,get_list_or_404
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils.text import slugify
 from .models import Post
-from .forms import UpdatePostForm
+from .forms import CreateUpdatePostForm
 
 
 
@@ -47,7 +45,7 @@ class PostView(View):
 class PostDetailView(View):
     
     def get(self,request,post_id,post_slug):
-        target_post=Post.objects.get(pk=post_id,slug=post_slug)
+        target_post=get_object_or_404(Post,pk=post_id,slug=post_slug)
         return render(request,'home/post_detail_page.html',{
             'post':target_post
         })
@@ -58,7 +56,7 @@ class PostDetailView(View):
 class DeletePostView(LoginRequiredMixin,View):
 
     def get(self,request,post_id):
-        target_post=Post.objects.get(id=post_id)
+        target_post=get_object_or_404(Post,id=post_id)
         if request.user.id == target_post.author.id:
             target_post.delete()
             messages.success(request,'your post deleted succuessfully',extra_tags='success')
@@ -68,11 +66,11 @@ class DeletePostView(LoginRequiredMixin,View):
             return redirect(reverse('home:home-page'))
 
 class UpdatePostView(LoginRequiredMixin,View):
-    form_class=UpdatePostForm
+    form_class=CreateUpdatePostForm
     template_name='home/update_post.html'
 
     def setup(self, request, *args,**kwargs):
-        self.target_post=Post.objects.get(id=kwargs['post_id'])
+        self.target_post=get_object_or_404(Post,id=kwargs['post_id'])
         return super().setup(request, *args, **kwargs)
     
 
@@ -100,3 +98,29 @@ class UpdatePostView(LoginRequiredMixin,View):
             
             messages.success(request,'post updated successfully',extra_tags='success')
             return redirect('home:post-detail-page',self.target_post.id,self.target_post.slug)
+
+class CreatePostView(LoginRequiredMixin,View):
+    form_class=CreateUpdatePostForm
+    template_name='home/create_post.html'
+
+    def get(self,request):
+        form=self.form_class()
+        return render(request,self.template_name,{
+            'form':form
+        })
+    
+    def post(self,request):
+        form=self.form_class(request.POST)
+        
+        if form.is_valid():
+            cd=form.cleaned_data
+
+            new_post=form.save(commit=False)
+            new_post.author=request.user
+            new_post.slug=slugify((cd['title'][:20]+"-"+cd['body'][:20]))
+            # new_post=Post.objects.create(title=cd['title'],body=cd['body'],author=author)
+            new_post.save()
+
+            messages.success(request,'post added successfully',extra_tags='success')
+            return redirect(reverse('home:home-page'))
+        

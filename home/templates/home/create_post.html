@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}create post page {% endblock title %}
+
+{% block content %}
+<h3 class='text-center'>this is create post page</h3 >
+    <form method='post' action="" novalidate>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input value="create" type="submit">
+    </form>
+{% endblock content %}
