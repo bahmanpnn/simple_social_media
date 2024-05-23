@@ -6,7 +6,9 @@
     <form method='post' action="" novalidate class='col-sm-6'>
         {% csrf_token %}
         {{form.as_p}}
-        <input value='login' type='submit'>
+        <input value='login' type='submit' class="btn btn-dark">
+        <a href="{% url "accounts:reset-password" %}" class="btn btn-info">forget password</a> 
     </form>
+    <br>
 {% endblock content %}
 

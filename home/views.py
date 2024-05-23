@@ -17,7 +17,9 @@ class HomeView(View):
     
     def get(self,request):
         posts=Post.objects.all()
-        posts=Post.objects.all().order_by('-created_date')[:4]
+        posts=Post.objects.order_by('?')[:4]
+        # posts=Post.objects.order_by('-created_date')[:4]
+        # posts=Post.objects.all().order_by('-created_date')[:4]
 
         
         return render(request,'home/home.html',{
@@ -30,7 +32,7 @@ class HomeView(View):
 class PostView(View):
     
     def get(self,request):
-        posts=Post.objects.all()
+        posts=Post.objects.order_by('-created_date')
         # posts=Post.objects.all().order_by('created_date')
 
         

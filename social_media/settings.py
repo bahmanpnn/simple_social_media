@@ -135,5 +135,14 @@ AUTHENTICATION_BACKENDS=[
 ]
 
 #EMAIL
-# EMAIL_BACKEND=""
-# EMAIL_=""
+#static settings
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+DEFAULT_FROM_EMAIL="Avalanch Website"
+
+#dynamic settings
+EMAIL_HOST_PASSWORD='fmzuujvawmnjgwrh'
+EMAIL_HOST_USER="hamidbagheri042@gmail.com"
+

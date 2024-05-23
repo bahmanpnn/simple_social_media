@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 class Post(models.Model):
-    author=models.ForeignKey(User,on_delete=models.CASCADE)
+    # author=models.ForeignKey(User,on_delete=models.CASCADE)
+    author=models.ForeignKey(User,on_delete=models.CASCADE,related_name='user_posts')
     title=models.CharField(max_length=127)
     slug=models.SlugField(unique=True,db_index=True,null=True)
     body=models.TextField()
@@ -21,3 +22,5 @@ class Post(models.Model):
     #     return reverse("home:post-detail-page", args=[str(self.id),self.slug])
     #     return reverse("home:post-detail-page", kwargs={"post_id": str(self.id),"post_slug":self.slug})
     
+    # class Meta:
+    #     ordering=('-created_date',)

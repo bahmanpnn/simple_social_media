@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect,get_object_or_404,get_list_or_404
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import RegisterForm,LoginForm
+from django.contrib.auth import views as auth_views 
 from home.models import Post
+from .forms import RegisterForm,LoginForm
+
 
 class RegisterView(View):
     
@@ -113,10 +115,34 @@ class UserProfileView(LoginRequiredMixin,View):
     def get(self,request,user_id):
         try:
             user=get_object_or_404(User,pk=user_id)
-            user_posts=Post.objects.filter(author_id=user_id)
-            user_posts=get_list_or_404(Post,author_id=user_id)
+            posts=user.user_posts.order_by('-created_date') #user_posts is related_name of author in post model
+            # user_posts=Post.objects.filter(author_id=user_id)
             # user_posts=Post.objects.filter(author=user)
-            return render(request,'accounts/profile.html',{'user':user,'posts':user_posts})
+            # user_posts=get_list_or_404(Post,author_id=user_id)
+            return render(request,'accounts/profile.html',{'user':user,'posts':posts})
 
         except User.DoesNotExist:
             return redirect(reverse('home:home-page'))
+        
+
+#reset password views
+
+class UserPasswordResetView(auth_views.PasswordResetView):
+    template_name='accounts/email/reset_password.html'
+    success_url=reverse_lazy('accounts:reset-password-done') #reverse_lazy when all templates load acts(when class done)
+    email_template_name='accounts/email/reset_password_email.html'
+
+
+class UserPasswordResetDone(auth_views.PasswordResetDoneView):
+    template_name='accounts/email/reset_password_done.html'
+
+class UserPasswordConfirmView(auth_views.PasswordResetConfirmView):
+    '''
+        this class works on email link that user recieve and click on it then this class and url load,
+        so this url has form that load for changing user password
+    '''
+    template_name='accounts/email/reset_password_confirm.html'
+    success_url=reverse_lazy('accounts:reset-password-complete')
+
+class UserPasswordCompleteView(auth_views.PasswordResetCompleteView):
+    template_name='accounts/email/reset_password_complete.html'
