@@ -53,6 +53,10 @@ class LoginView(View):
     template_name='accounts/login.html'
     form_class=LoginForm
 
+    def setup(self, request, *args, **kwargs):
+        self.next=request.GET.get('next',None)
+        return super().setup(request, *args, **kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.error(request,'you logged in and can not login when logged in; so logout first then login ;))',extra_tags='danger')
@@ -73,6 +77,9 @@ class LoginView(View):
             if check_user is not None:
                 login(request,check_user)
                 messages.success(request,'you logged in successfully :)))',extra_tags='success')
+
+                if self.next:
+                    return redirect(self.next)
                 return redirect(reverse('home:home-page'))
             # else:
             #     messages.error(request,'your username does not exists!! try again please',extra_tags='danger')
