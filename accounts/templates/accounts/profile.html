@@ -11,7 +11,15 @@
         {% endif %}
     <hr>
     </br>
-    <a href="{% url "home:post-create" %}" class="btn btn-success">add a new post</a> 
+      {% if request.user.id == user.id %}
+        <a href="{% url "home:post-create" %}" class="btn btn-success">add a new post</a>
+        {% else %}
+        {% if is_following %}
+        <a href="{% url "accounts:unfollow-view" user_id=user.id %}" class="btn btn-info">unfollow</a>
+        {% else %}
+        <a href="{% url "accounts:follow-view" user_id=user.id %}" class="btn btn-info">follow</a>
+        {% endif %}
+      {% endif %}
       {% if posts %}
         {% for post in posts %}
           <div class="card text-center">

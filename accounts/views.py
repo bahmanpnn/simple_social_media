@@ -6,8 +6,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views 
-from home.models import Post
 from .forms import RegisterForm,LoginForm
+from .models import RelationUser
+# from home.models import Post
 
 
 class RegisterView(View):
@@ -112,6 +113,7 @@ class LogoutView(LoginRequiredMixin,View):
 
 
 class UserProfileView(LoginRequiredMixin,View):
+
     def get(self,request,user_id):
         try:
             user=get_object_or_404(User,pk=user_id)
@@ -119,7 +121,13 @@ class UserProfileView(LoginRequiredMixin,View):
             # user_posts=Post.objects.filter(author_id=user_id)
             # user_posts=Post.objects.filter(author=user)
             # user_posts=get_list_or_404(Post,author_id=user_id)
-            return render(request,'accounts/profile.html',{'user':user,'posts':posts})
+
+            is_following=False
+            relation=RelationUser.objects.filter(from_user=request.user,to_user=user_id)
+            if relation.exists():
+                is_following=True
+
+            return render(request,'accounts/profile.html',{'user':user,'posts':posts,'is_following':is_following})
 
         except User.DoesNotExist:
             return redirect(reverse('home:home-page'))
@@ -146,3 +154,54 @@ class UserPasswordConfirmView(auth_views.PasswordResetConfirmView):
 
 class UserPasswordCompleteView(auth_views.PasswordResetCompleteView):
     template_name='accounts/email/reset_password_complete.html'
+
+
+#follow and unfollow views
+
+class UserFollowView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        user=User.objects.get(id=user_id)
+        if not RelationUser.objects.filter(from_user=request.user,to_user=user).exists():
+            new_follow=RelationUser.objects.create(from_user=request.user,to_user=user)
+            new_follow.save()
+            messages.success(request,'you followed this user')
+        else:
+            messages.error(request,'you followed this user before',extra_tags='danger')
+        return redirect('accounts:profile-page',user_id)
+
+
+
+class UserUnFollowView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        user=User.objects.get(id=user_id)
+        relation=RelationUser.objects.filter(from_user=request.user,to_user=user)
+        if relation.exists():
+            relation.delete()
+            messages.success(request,'you unfollowed this user',extra_tags='success')
+        else:
+            messages.error(request,'you are not following this user and can not unfollow!!',extra_tags='danger')
+        
+        return redirect('accounts:profile-page',user.id)
+    
+    
+# class UserFollowView(LoginRequiredMixin,View):
+#     def get(self,request,user_id):
+#         if not RelationUser.objects.filter(from_user=request.user,to_user=user_id).exists():
+#             new_follow=RelationUser.objects.create(from_user=request.user,to_user=user_id)
+#             new_follow.save()
+#             messages.success(request,'you followed this user')
+#         else:
+#             messages.error(request,'you followed this user before',extra_tags='danger')
+#         return redirect('accounts:profile-page',user_id)
+
+
+# class UserUnFollowView(LoginRequiredMixin,View):
+#     def get(self,request,user_id):
+#         relation=RelationUser.objects.filter(from_user=request.user,to_user=user_id)
+#         if relation.exists():
+#             relation.delete()
+#             messages.success(request,'you unfollowed this user',extra_tags='success')
+#         else:
+#             messages.error(request,'you are not following this user and can not unfollow!!',extra_tags='danger')
+        
+#         return redirect('accounts:profile-page',user_id)

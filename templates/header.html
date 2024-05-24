@@ -17,7 +17,7 @@
             <a class="nav-link " aria-current="page" href="{% url "accounts:logout-page" %}">logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="{% url "accounts:profile-page" user_id=user.id %}">profile</a>
+            <a class="nav-link " aria-current="page" href="{% url "accounts:profile-page" user_id=request.user.id %}">profile</a>
           </li>
           {% else %}
           <li class="nav-item">

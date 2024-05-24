@@ -8,6 +8,9 @@
           {% if request.user.id == post.author.id %}
             <a href="{% url "home:post-delete" post_id=post.id %}" class="btn btn-danger">delete</a> 
             <a href="{% url "home:post-update" post_id=post.id %}" class="btn btn-info">update</a> 
+            {% else %}
+            <a href="{% url "accounts:profile-page" user_id=post.author.id %}" class="btn btn-info">go to author profile</a> 
+            
           {% endif %}
           <div class="card text-center">
             <div class="card-header">
