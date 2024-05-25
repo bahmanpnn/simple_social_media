@@ -7,6 +7,8 @@
     <form method='post' action="" novalidate>
         {% csrf_token %}
         {{form.as_p}}
-        <input value="create" type="submit">
+        <div class='col-md-3 offset-4 '>
+            <input class="form-control bg-dark text-light" value="create" type="submit">
+        </div>
     </form>
 {% endblock content %}

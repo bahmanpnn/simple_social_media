@@ -29,6 +29,16 @@
             </div>
           </div>
           <br>
+          {% if request.user.is_authenticated %}
+            <form method='post' action="" novalidate>
+              {% csrf_token %}
+              {{comment_form.as_p}}
+              <input class='col-md-1' value='submit' type='submit'>
+              {% comment %} <input class='col-md-1 offset-5' value='submit' type='submit'> {% endcomment %}
+            </form>
+            {% else %}
+            <p class='alert alert-danger'>only <a href="{% url "accounts:login-page" %}">logged in</a> user cans comment!!<p>
+          {% endif %}
           {% if comments %}
           <h5 class='text-center'>comments({{comments.count}})</h5>
             {% for comment in comments %}

@@ -1,11 +1,15 @@
+from typing import Any
+from django.http import HttpRequest
 from django.shortcuts import render,redirect,get_object_or_404,get_list_or_404
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils.text import slugify
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from .models import Post,PostComment
-from .forms import CreateUpdatePostForm
+from .forms import CreateUpdatePostForm,CommentCreateForm
 
 
 
@@ -45,18 +49,33 @@ class PostView(View):
 
 
 class PostDetailView(View):
-    
-    def get(self,request,post_id,post_slug):
-        target_post=get_object_or_404(Post,pk=post_id,slug=post_slug)
-        comments=target_post.post_comments.filter(is_reply=False)
+    form_class=CommentCreateForm
+
+    def setup(self, request, *args, **kwargs):
+        self.target_post_instance=get_object_or_404(Post,pk=kwargs['post_id'],slug=kwargs['post_slug'])
+        return super().setup(request, *args, **kwargs)
+
+    def get(self,request,*args, **kwargs):
+        comments=self.target_post_instance.post_comments.filter(is_reply=False)
         # comments=PostComment.objects.filter(post=target_post,is_reply=False)
         return render(request,'home/post_detail_page.html',{
-            'post':target_post,
-            'comments':comments
+            'post':self.target_post_instance,
+            'comments':comments,
+            'comment_form':self.form_class()
         })
 
-    def post(self,request):
-        pass
+    @method_decorator(login_required)
+    def post(self,request,*args, **kwargs):
+        form=self.form_class(request.POST)
+
+        if form.is_valid():
+            new_comment=form.save(commit=False)
+            new_comment.post=self.target_post_instance
+            new_comment.user=request.user
+            new_comment.save()
+            messages.success(request,'your comment submitted succussfully',extra_tags='success')
+        
+        return redirect('home:post-detail-page',self.target_post_instance.id,self.target_post_instance.slug)
 
 class DeletePostView(LoginRequiredMixin,View):
 
