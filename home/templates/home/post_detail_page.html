@@ -36,6 +36,7 @@
               <input class='col-md-1' value='submit' type='submit'>
               {% comment %} <input class='col-md-1 offset-5' value='submit' type='submit'> {% endcomment %}
             </form>
+            <br>
             {% else %}
             <p class='alert alert-danger'>only <a href="{% url "accounts:login-page" %}">logged in</a> user cans comment!!<p>
           {% endif %}
@@ -45,6 +46,29 @@
               <div class='bg-white text-black card'>
                 <p class='card-header'>{{comment.user}} | {{comment.created_date|timesince}}</p>
                 <p class='bg-dark text-white card-body'>{{comment.body}}</p>
+                
+                {% if request.user.is_authenticated %}
+                  <form method='post' action="{% url "home:reply-comment" post_id=post.id comment_id=comment.id %}" novalidate>
+                    {% csrf_token %}
+                    {{reply_form.as_p}}
+                    <input class='col-md-1' value='submit' type='submit'>
+                  </form>
+                {% endif %}
+
+                {% if comment.reply_comments %}
+                  {% with replies=comment.reply_comments.all %}
+                    {% for reply in replies  %}
+                    {% comment %} {% for reply in comment.reply_comments.all %} {% endcomment %}
+                      <p class='bg-primary text-white p-4 m-2'>
+                        {{reply.user}} | {{reply.created_date|timesince}}  :  
+                        {{reply.body}}
+                      </p>
+                      {% if not forloop.last %}
+                        <hr>
+                      {% endif %}
+                    {% endfor %}
+                  {% endwith %}
+                {% endif %}
               </div>
               <br>
             {% endfor %}

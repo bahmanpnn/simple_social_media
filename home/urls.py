@@ -10,5 +10,6 @@ urlpatterns = [
     path('posts/delete/<int:post_id>/',views.DeletePostView.as_view(),name='post-delete'),
     path('posts/update/<int:post_id>/',views.UpdatePostView.as_view(),name='post-update'),
     path('posts/create/',views.CreatePostView.as_view(),name='post-create'),
+    path('reply/<int:post_id>/<int:comment_id>/',views.ReplyPostCommentView.as_view(),name='reply-comment'),
 
 ]

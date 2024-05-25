@@ -30,3 +30,15 @@ class CommentCreateForm(forms.ModelForm):
             })
         }
 
+class ReplyCommentForm(forms.ModelForm):
+    class Meta:
+        model=PostComment
+        fields=('body',)
+
+        widgets={
+            'body':forms.Textarea(attrs={
+                'class':'form-control bg-light',
+                'rows':2,
+            })
+        }
+
