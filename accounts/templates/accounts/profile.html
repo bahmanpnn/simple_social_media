@@ -22,8 +22,8 @@
         {% endif %}
       {% endif %}
 
-      <a href="{% url "accounts:user-followers" user_id=user.id %}" class="btn btn-dark">followers</a>
-      <a href="{% url "accounts:user-followings" user_id=user.id %}" class="btn btn-dark">followings</a>
+      <a href="{% url "accounts:user-followers" user_id=user.id %}" class="btn btn-dark">followers({{followers_count}})</a>
+      <a href="{% url "accounts:user-followings" user_id=user.id %}" class="btn btn-dark">followings({{followings_count}})</a>
       {% if posts %}
         {% for post in posts %}
           <div class="card text-center">

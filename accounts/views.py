@@ -134,7 +134,13 @@ class UserProfileView(LoginRequiredMixin,View):
             if relation.exists():
                 is_following=True
 
-            return render(request,'accounts/profile.html',{'user':user,'posts':posts,'is_following':is_following})
+            followers_count=RelationUser.objects.filter(to_user=user).count()
+            followings_count=RelationUser.objects.filter(from_user=user).count()
+
+            return render(
+                    request,'accounts/profile.html',{'user':user,'posts':posts,'is_following':is_following,
+                                                    'followings_count':followings_count,'followers_count':followers_count}
+                    )
 
         except User.DoesNotExist:
             return redirect(reverse('home:home-page'))
@@ -212,6 +218,8 @@ class UserUnFollowView(LoginRequiredMixin,View):
 #             messages.error(request,'you are not following this user and can not unfollow!!',extra_tags='danger')        
 #         return redirect('accounts:profile-page',user_id)
 
+
+#followings and followers
 class UserFollowingsView(LoginRequiredMixin,View):
     def get(self,request,user_id):
         user=User.objects.get(pk=user_id)
