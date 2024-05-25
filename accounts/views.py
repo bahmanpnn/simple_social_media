@@ -209,6 +209,24 @@ class UserUnFollowView(LoginRequiredMixin,View):
 #             relation.delete()
 #             messages.success(request,'you unfollowed this user',extra_tags='success')
 #         else:
-#             messages.error(request,'you are not following this user and can not unfollow!!',extra_tags='danger')
-        
+#             messages.error(request,'you are not following this user and can not unfollow!!',extra_tags='danger')        
 #         return redirect('accounts:profile-page',user_id)
+
+class UserFollowingsView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        user=User.objects.get(pk=user_id)
+        followings=RelationUser.objects.filter(from_user=user)
+
+        return render(request,'accounts/followings.html',{
+            "followings":followings
+        })
+
+class UserFollowersView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        target_user=User.objects.get(pk=user_id)
+        followers=RelationUser.objects.filter(to_user=target_user)
+
+        return render(request,'accounts/followers.html',{
+            "followers":followers
+        })
+

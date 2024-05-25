@@ -16,6 +16,9 @@ urlpatterns = [
     #fallow / unfallow
     path('follow/<int:user_id>/',views.UserFollowView.as_view(),name='follow-view'),
     path('unfollow/<int:user_id>/',views.UserUnFollowView.as_view(),name='unfollow-view'),
+    #followers / followings
+    path('followings/<int:user_id>/',views.UserFollowingsView.as_view(),name='user-followings'),
+    path('followers/<int:user_id>/',views.UserFollowersView.as_view(),name='user-followers'),
 
 
 ]

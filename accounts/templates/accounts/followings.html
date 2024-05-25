@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}followings page{% endblock title %}
+
+{% block content %}
+    {% if followings %}
+        {% for following in followings  %}
+        <p class="text-center">
+            {{forloop.counter}}- 
+            {% if following.to_user.username %}
+                {{following.to_user.username}}
+                {% else %}
+                {{following.to_user.email}}
+            {% endif %}
+        </p>
+        {% endfor %} 
+        {% else %}
+        <h2 class='text-center'>there is no following!!</h2>   
+    {% endif %}
+{% endblock content %}
