@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post
+from .models import Post,PostComment
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -19,3 +19,12 @@ class PostAdmin(admin.ModelAdmin):
     # list_editable=[]
 
 admin.site.register(Post,PostAdmin)
+
+@admin.register(PostComment)
+class PostCommentAdmin(admin.ModelAdmin):
+    list_display=['user','post','created_date','is_reply']
+    raw_id_fields=('user','post','reply')
+    readonly_fields=('created_date',)
+
+    # list_filter=[]
+    # search_fields=[]

@@ -4,7 +4,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils.text import slugify
-from .models import Post
+from .models import Post,PostComment
 from .forms import CreateUpdatePostForm
 
 
@@ -48,8 +48,11 @@ class PostDetailView(View):
     
     def get(self,request,post_id,post_slug):
         target_post=get_object_or_404(Post,pk=post_id,slug=post_slug)
+        comments=target_post.post_comments.filter(is_reply=False)
+        # comments=PostComment.objects.filter(post=target_post,is_reply=False)
         return render(request,'home/post_detail_page.html',{
-            'post':target_post
+            'post':target_post,
+            'comments':comments
         })
 
     def post(self,request):

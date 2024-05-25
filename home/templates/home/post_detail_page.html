@@ -28,4 +28,22 @@
               {{post.created_date | date:'j M o D'}}
             </div>
           </div>
+          <br>
+          {% if comments %}
+          <h5 class='text-center'>comments({{comments.count}})</h5>
+            {% for comment in comments %}
+              <div class='bg-white text-black card'>
+                <p class='card-header'>{{comment.user}} | {{comment.created_date|timesince}}</p>
+                <p class='bg-dark text-white card-body'>{{comment.body}}</p>
+              </div>
+              <br>
+            {% endfor %}
+            {% else %}
+            <p class='bg-dark text-white text-center'>no comments!</p>
+          {% endif %}
+
+          {% comment %} {% for comment in comments %}
+          {%empty%}
+          <p class="text-center">no comments!</p>
+          {% endfor %} {% endcomment %}
 {% endblock content %}
