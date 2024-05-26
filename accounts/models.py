@@ -12,4 +12,11 @@ class RelationUser(models.Model):
     
 
 
-    
+class ProfileUser(models.Model):
+    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    age=models.PositiveSmallIntegerField(default=0)
+    phone_number=models.CharField(max_length=11,blank=True,null=True)
+    bio=models.TextField(max_length=510,blank=True,null=True)
+
+    def __str__(self):
+        return self.user.username

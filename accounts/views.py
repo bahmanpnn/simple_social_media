@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views 
-from .forms import RegisterForm,LoginForm
+from .forms import RegisterForm,LoginForm,ProfileForm
 from .models import RelationUser
 # from home.models import Post
 
@@ -120,6 +120,7 @@ class LogoutView(LoginRequiredMixin,View):
 
 
 class UserProfileView(LoginRequiredMixin,View):
+    form_class=ProfileForm
 
     def get(self,request,user_id):
         try:
@@ -137,15 +138,28 @@ class UserProfileView(LoginRequiredMixin,View):
             followers_count=RelationUser.objects.filter(to_user=user).count()
             followings_count=RelationUser.objects.filter(from_user=user).count()
 
+            
+            profile_form=self.form_class(instance=request.user.profileuser,initial={'email':request.user.email})
             return render(
-                    request,'accounts/profile.html',{'user':user,'posts':posts,'is_following':is_following,
-                                                    'followings_count':followings_count,'followers_count':followers_count}
+                    request,'accounts/profile.html',
+                    {'user':user,'posts':posts,'is_following':is_following,'followings_count':
+                        followings_count,'followers_count':followers_count,'profile_form':profile_form
+                    }
                     )
 
         except User.DoesNotExist:
             return redirect(reverse('home:home-page'))
         
-
+    def post(self,request,*args, **kwargs):
+        profile_form=self.form_class(request.POST,instance=request.user.profileuser)
+        if profile_form.is_valid():
+            profile_form.save()
+            user=request.user
+            user.email=profile_form.cleaned_data['email']
+            user.save()
+            messages.success(request,'profile updated successfully',extra_tags='success')
+        return redirect('accounts:profile-page',request.user.id)
+    
 #reset password views
 
 class UserPasswordResetView(auth_views.PasswordResetView):

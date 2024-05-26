@@ -3,12 +3,17 @@
 {% block title %}posts {% endblock title %}
 
 {% block content %}
-    <h3 class='text-center'>this is profile page</h3 >
         {% if user.username %}
         <h3 class='text-center'>{{user.username}}</h3>
         {% else %}
         {{user.email}}
-        {% endif %}
+        {% endif %} <br>
+
+        <form method='post' action="" novalidate >
+          {% csrf_token %}
+          {{profile_form.as_p}}
+          <input value='edit' type='submit' class="btn btn-dark">
+        </form>
     <hr>
     </br>
       {% if request.user.id == user.id %}

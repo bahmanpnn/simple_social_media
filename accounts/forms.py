@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from .models import ProfileUser
+
 
 class RegisterForm(forms.Form):
 
@@ -67,3 +69,25 @@ class LoginForm(forms.Form):
         'class':'form-control col-md-3',
         'placeholder':'password'
     }))
+
+class ProfileForm(forms.ModelForm):
+    email=forms.EmailField(widget=forms.EmailInput(attrs={
+        'class':'form-control bg-light',
+    }))
+
+    class Meta:
+        model=ProfileUser
+        fields=('age','phone_number','bio')
+
+        widgets={
+            'age':forms.TextInput(attrs={
+                'class':'form-control bg-light',
+            }),
+            'phone_number':forms.TextInput(attrs={
+                'class':'form-control bg-light',
+            }),
+            'bio':forms.Textarea(attrs={
+                'class':'form-control bg-light',
+                'rows':2,
+            })
+        }
