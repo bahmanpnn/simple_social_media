@@ -143,6 +143,6 @@ EMAIL_PORT=587
 DEFAULT_FROM_EMAIL="Avalanch Website"
 
 #dynamic settings
+EMAIL_HOST_USER="hamidbagheri042@gmail.com" #this is my test gmail please dont use it for yourself
 EMAIL_HOST_PASSWORD='fmzuujvawmnjgwrh'
-EMAIL_HOST_USER="hamidbagheri042@gmail.com"
 

@@ -42,3 +42,10 @@ class ReplyCommentForm(forms.ModelForm):
             })
         }
 
+
+class PostSearchForm(forms.Form):
+
+    search=forms.CharField(widget=forms.TextInput(attrs={
+        'class':'form-control col-md-3',
+        'placeholder':'search'
+    }))

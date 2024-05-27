@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import Post,PostComment
-from .forms import CreateUpdatePostForm,CommentCreateForm, ReplyCommentForm
+from .forms import CreateUpdatePostForm,CommentCreateForm, ReplyCommentForm,PostSearchForm
 
 
 
@@ -34,14 +34,17 @@ class HomeView(View):
         pass
 
 class PostView(View):
+    form_class=PostSearchForm
     
     def get(self,request):
         posts=Post.objects.order_by('-created_date')
         # posts=Post.objects.all().order_by('created_date')
 
-        
+        if request.GET.get('search'):
+            posts=posts.filter(body__contains=request.GET['search'])
+
         return render(request,'home/posts.html',{
-            'posts':posts
+            'posts':posts,'search_form':self.form_class
         })
 
     def post(self,request):
